@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - TechBajar Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.11.3/main.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4D44DB;
+            --accent: #FF6584;
+            --light: #F8F9FA;
+            --dark: #212529;
+            --success: #28A745;
+            --warning: #FFC107;
+            --danger: #DC3545;
+        }
+        
+        .sidebar {
+            background: var(--dark);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            transition: all 0.3s;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+        
+        .stat-card {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+        
+        .transaction-item {
+            border-left: 3px solid transparent;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .transaction-item.credit {
+            border-left-color: var(--success);
+        }
+        
+        .transaction-item.debit {
+            border-left-color: var(--danger);
+        }
+        
+        .mentor-card {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .mentor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .availability-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+        
+        .availability-badge.available {
+            background: var(--success);
+            color: white;
+        }
+        
+        .availability-badge.busy {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .product-rating {
+            color: var(--warning);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar.active {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="p-3">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none">
+                <span class="fs-4 fw-bold"><span style="color: var(--primary);">Tech</span>Bajar</span>
+            </a>
+        </div>
+        <hr>
+        <ul class="nav flex-column px-3">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#wallet-section" class="nav-link">
+                    <i class="bi bi-wallet2"></i> Wallet & Payments
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#mentors-section" class="nav-link">
+                    <i class="bi bi-people"></i> Mentor Connect
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#analytics-section" class="nav-link">
+                    <i class="bi bi-graph-up"></i> Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-box-seam"></i> Products
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-cart"></i> Orders
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-chat-left-text"></i> Reviews
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div class="px-3">
+            <div class="d-flex align-items-center text-white text-decoration-none">
+                <img src="pfp.jpg" alt="Profile Picture" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <div>
+                    <div class="fw-bold">Alexa</div>
+                    <small>GreenTech Startups</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand navbar-light bg-white rounded shadow-sm mb-4">
+            <div class="container-fluid">
+                <button class="btn btn-link d-md-none" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="navbar-nav ms-auto">
+                    <div class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="notificationsDropdown" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                3
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">New order received</a></li>
+                            <li><a class="dropdown-item" href="#">Mentor session confirmed</a></li>
+                            <li><a class="dropdown-item text-danger" href="#">Low wallet balance</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">View all notifications</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown ms-3">
+                        <a href="#" class="nav-link dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Overview -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">Total Revenue</h6>
+                                <h3>$2,845</h3>
+                                <span class="text-success"><i class="bi bi-arrow-up"></i> 12% from last month</span>
+                            </div>
+                            <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-currency-dollar text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">Total Orders</h6>
+                                <h3>48</h3>
+                                <span class="text-success"><i class="bi bi-arrow-up"></i> 8% from last month</span>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-cart-check text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">Avg. Rating</h6>
+                                <h3>4.7 <small class="text-muted">/5</small></h3>
+                                <span class="text-warning"><i class="bi bi-star-fill"></i> 24 reviews</span>
+                            </div>
+                            <div class="bg-warning bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-star text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet & Digital Payment Section -->
+        <div class="card mb-4" id="wallet-section">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-wallet2 me-2"></i> Wallet & Payments</h5>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addFundsModal">
+                    <i class="bi bi-plus"></i> Add Funds
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-warning" id="lowBalanceAlert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Low Balance:</strong> Your wallet balance is below $10. Consider adding funds.
+                        </div>
+                        
+                        <div class="p-4 bg-light rounded mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0">Current Balance</h6>
+                                <span class="badge bg-primary">Campus Wallet</span>
+                            </div>
+                            <h1 class="display-4 fw-bold mb-3">$8.50</h1>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary btn-sm">Withdraw</button>
+                                <button class="btn btn-outline-secondary btn-sm">Transfer</button>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mb-3">Quick Actions</h6>
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            <button class="btn btn-outline-primary">Request Payment</button>
+                            <button class="btn btn-outline-primary">Generate Invoice</button>
+                            <button class="btn btn-outline-primary">Issue Refund</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Recent Transactions</h6>
+                        <div class="transaction-item credit">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Order #1245 Payment</strong>
+                                    <div class="text-muted small">Today, 10:45 AM</div>
+                                </div>
+                                <div class="text-success">+$24.99</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item debit">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Mentor Session Fee</strong>
+                                    <div class="text-muted small">Yesterday, 2:30 PM</div>
+                                </div>
+                                <div class="text-danger">-$15.00</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item credit">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Added Funds</strong>
+                                    <div class="text-muted small">Mar 12, 2023</div>
+                                </div>
+                                <div class="text-success">+$50.00</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item debit">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Order #1201 Refund</strong>
+                                    <div class="text-muted small">Mar 10, 2023</div>
+                                </div>
+                                <div class="text-danger">-$12.99</div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary">View All Transactions</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mentor Connect Section -->
+        <div class="card mb-4" id="mentors-section">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-people me-2"></i> Mentor Connect</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h6>Upcoming Sessions</h6>
+                        <div id="mentorCalendar" style="min-height: 300px;"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Recommended Mentors</h6>
+                        <div class="card mentor-card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Mentor">
+                                    <div>
+                                        <h6 class="mb-0">Dr. Sarah Johnson</h6>
+                                        <small class="text-muted">Business Development</small>
+                                    </div>
+                                </div>
+                                <p class="small text-muted">10+ years experience helping startups with business planning and funding strategies.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="availability-badge available">Available</span>
+                                    <button class="btn btn-sm btn-outline-primary">Request Session</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mentor-card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Mentor">
+                                    <div>
+                                        <h6 class="mb-0">Mark Williams</h6>
+                                        <small class="text-muted">Marketing & Branding</small>
+                                    </div>
+                                </div>
+                                <p class="small text-muted">Former marketing director at major tech company, specializes in digital marketing.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="availability-badge available">Available</span>
+                                    <button class="btn btn-sm btn-outline-primary">Request Session</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a href="#" class="btn btn-sm btn-primary">Browse All Mentors</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <h6 class="mt-4 mb-3">Recent Mentor Interactions</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Mentor</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://via.placeholder.com/30" class="rounded-circle me-2" alt="Mentor">
+                                        Dr. Sarah Johnson
+                                    </div>
+                                </td>
+                                <td>Mar 15, 2023</td>
+                                <td>Video Call</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td><a href="#" class="btn btn-sm btn-outline-primary">View Notes</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://via.placeholder.com/30" class="rounded-circle me-2" alt="Mentor">
+                                        Lisa Chen
+                                    </div>
+                                </td>
+                                <td>Mar 18, 2023</td>
+                                <td>Chat</td>
+                                <td><span class="badge bg-warning text-dark">Pending</span></td>
+                                <td><a href="#" class="btn btn-sm btn-outline-secondary">Cancel</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://via.placeholder.com/30" class="rounded-circle me-2" alt="Mentor">
+                                        Mark Williams
+                                    </div>
+                                </td>
+                                <td>Mar 20, 2023</td>
+                                <td>Video Call</td>
+                                <td><span class="badge bg-info">Scheduled</span></td>
+                                <td><a href="#" class="btn btn-sm btn-outline-primary">Join</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Startup Analytics Section -->
+        <div class="card mb-4" id="analytics-section">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i> Startup Analytics</h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs mb-4" id="analyticsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Products</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="customers-tab" data-bs-toggle="tab" data-bs-target="#customers" type="button" role="tab">Customers</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="analyticsTabContent">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Revenue Trends (Last 30 Days)</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="https://via.placeholder.com/800x300?text=Revenue+Chart" class="img-fluid" alt="Revenue Chart">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Order Status</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="https://via.placeholder.com/400x300?text=Order+Status+Chart" class="img-fluid" alt="Order Status Chart">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Customer Ratings</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="product-rating me-3">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-half"></i>
+                                                <span class="ms-2">4.7/5</span>
+                                            </div>
+                                            <div class="text-muted small">(24 reviews)</div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span>5 stars</span>
+                                                <span>15</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: 62.5%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span>4 stars</span>
+                                                <span>6</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: 25%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span>3 stars</span>
+                                                <span>2</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: 8.3%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span>2 stars</span>
+                                                <span>1</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: 4.2%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span>1 star</span>
+                                                <span>0</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Recent Reviews</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex mb-3">
+                                            <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="User">
+                                            <div>
+                                                <div class="product-rating mb-1">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star-fill"></i>
+                                                </div>
+                                                <h6 class="mb-1">Excellent product!</h6>
+                                                <p class="small text-muted mb-0">The bamboo laptop stand is sturdy and eco-friendly. Highly recommend!</p>
+                                                <small class="text-muted">- Alex, Mar 14, 2023</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="User">
+                                            <div>
+                                                <div class="product-rating mb-1">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <i class="bi bi-star"></i>
+                                                </div>
+                                                <h6 class="mb-1">Good quality</h6>
+                                                <p class="small text-muted mb-0">Love the design, but packaging could be more sustainable.</p>
+                                                <small class="text-muted">- Jamie, Mar 10, 2023</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="products" role="tabpanel" aria-labelledby="products-tab">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Orders</th>
+                                        <th>Revenue</th>
+                                        <th>Rating</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/40" class="rounded me-2" alt="Product">
+                                                Bamboo Laptop Stand
+                                            </div>
+                                        </td>
+                                        <td>$24.99</td>
+                                        <td>18</td>
+                                        <td>$449.82</td>
+                                        <td>
+                                            <div class="product-rating">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-half"></i>
+                                                <span class="ms-1">4.7</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/40" class="rounded me-2" alt="Product">
+                                                Reusable Coffee Cup
+                                            </div>
+                                        </td>
+                                        <td>$14.99</td>
+                                        <td>12</td>
+                                        <td>$179.88</td>
+                                        <td>
+                                            <div class="product-rating">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <span class="ms-1">5.0</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/40" class="rounded me-2" alt="Product">
+                                                Organic Energy Bars (Pack of 5)
+                                            </div>
+                                        </td>
+                                        <td>$12.99</td>
+                                        <td>8</td>
+                                        <td>$103.92</td>
+                                        <td>
+                                            <div class="product-rating">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star"></i>
+                                                <span class="ms-1">4.2</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">View</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="customers" role="tabpanel" aria-labelledby="customers-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Customer Demographics</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="https://via.placeholder.com/600x300?text=Demographics+Chart" class="img-fluid" alt="Demographics Chart">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Repeat Customers</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="https://via.placeholder.com/600x300?text=Repeat+Customers+Chart" class="img-fluid" alt="Repeat Customers Chart">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Funds Modal -->
+    <div class="modal fade" id="addFundsModal" tabindex="-1" aria-labelledby="addFundsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFundsModalLabel">Add Funds to Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="amount" placeholder="0.00" min="5" step="5">
+                        </div>
+                        <div class="form-text">Minimum amount is $5.00</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Method</label>
+                        <div class="list-group">
+                            <label class="list-group-item">
+                                <input class="form-check-input me-1" type="radio" name="paymentMethod" value="card" checked>
+                                Credit/Debit Card
+                            </label>
+                            <label class="list-group-item">
+                                <input class="form-check-input me-1" type="radio" name="paymentMethod" value="bank">
+                                Bank Transfer
+                            </label>
+                            <label class="list-group-item">
+                                <input class="form-check-input me-1" type="radio" name="paymentMethod" value="campus">
+                                Campus Payment
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Add Funds</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Call Modal -->
+    <div class="modal fade" id="videoCallModal" tabindex="-1" aria-labelledby="videoCallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="videoCallModalLabel">Mentor Session with Dr. Sarah Johnson</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="ratio ratio-16x9 mb-3">
+                        <img src="https://via.placeholder.com/800x450?text=Video+Call+Interface" class="img-fluid" alt="Video Call">
+                    </div>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-outline-danger">
+                            <i class="bi bi-mic-mute"></i> Mute
+                        </button>
+                        <button class="btn btn-outline-secondary">
+                            <i class="bi bi-camera-video-off"></i> Video Off
+                        </button>
+                        <button class="btn btn-outline-primary">
+                            <i class="bi bi-chat-left-text"></i> Chat
+                        </button>
+                        <button class="btn btn-success">
+                            <i class="bi bi-telephone"></i> Join
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.11.3/main.min.js"></script>
+    <script>
+        // Sidebar toggle for mobile
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+        
+        // Initialize calendar
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('mentorCalendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: [
+                    {
+                        title: 'Mentor Session - Dr. Johnson',
+                        start: '2023-03-20T14:30:00',
+                        end: '2023-03-20T15:30:00',
+                        backgroundColor: 'var(--primary)',
+                        borderColor: 'var(--primary)'
+                    },
+                    {
+                        title: 'Marketing Workshop',
+                        start: '2023-03-22T10:00:00',
+                        end: '2023-03-22T12:00:00',
+                        backgroundColor: 'var(--success)',
+                        borderColor: 'var(--success)'
+                    }
+                ]
+            });
+            calendar.render();
+        });
+        
+        // Check wallet balance and show alert if low
+        function checkBalance() {
+            const balance = 8.50; // This would come from your backend in a real app
+            const alertElement = document.getElementById('lowBalanceAlert');
+            
+            if (balance < 10) {
+                alertElement.classList.remove('d-none');
+            } else {
+                alertElement.classList.add('d-none');
+            }
+        }
+        
+        // Initialize
+        checkBalance();
+    </script>
+</body>
+</html>
